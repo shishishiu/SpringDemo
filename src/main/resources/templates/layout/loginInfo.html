@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<div style="margin:3px;width:98%;text-align: right" th:fragment="loginInfo">
+	<span sec:authentication="principal.loginId"></span> <span sec:authentication="name"></span>
+	<span sec:authentication="principal.authorities"></span>
+</div>
+</body>
+</html>

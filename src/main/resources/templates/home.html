@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:include="layout/header :: header">
+	<title>Web Page</title>
+ </head>
+ <body>
+ 
+	<div class="bastidor">        
+	    <p><a  th:text="#{title.iniciar_sesion}" th:href="@{/mypage}">here</a> </p>
+	  	<div th:include="layout/footer :: copy"></div>
+  	</div>
+</body>
+</html>

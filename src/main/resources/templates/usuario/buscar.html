@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="layout/header :: header">
+	<title>Web Page</title>
+</head>
+<body>
+
+	<script src="/js/usuario/buscar.js"></script>
+	<div class="container">
+		<div th:replace="layout/loginInfo :: loginInfo"></div>
+
+
+		<h2>Buscar Usuario</h2>
+
+        <form action="/admin/usuario/buscar" th:action="@{/admin/usuario/buscar}" method="post" id="buscarForm">
+          <div>
+            <input type="text" name="keyword" id="keyword" th:placeholder="#{common.texto.buscar}" th:value="${keyword}"/>
+            <a href="javascript:void(0)" onclick="buscar()" th:title="#{common.texto.buscar}"><i class="material-icons">search</i></a>
+            <a href="/admin/usuario/add" title="new usuario"><i class="material-icons">add</i></a>
+          </div>
+        </form>
+
+	
+		<div class="row">
+	        <table class="table">
+	          <thead>
+	            <tr>
+	              <th th:utext="#{mstUser.loginId}"></th>
+	              <th th:utext="#{mstUser.username}"></th>
+	              <th>&nbsp;</th>
+	            </tr>
+	          </thead>
+	          <tbody>
+	            <tr th:each="item,iterStat : ${list}">
+	              <td><a class="btn btn-default" href="/admin/usuario/${item.loginId}" th:href="@{/admin/usuario/{loginId}(loginId=${item.loginId})}" th:text="${item.loginId}">1</a></td>
+	              <td th:text="${item.username}"></td>
+	              <td>
+	                <a class="btn btn-warning" href="javascript:void(0)" th:attr="onclick='deleteUser(\'' + ${item.loginId} + '\');'" title="delete"><i class="material-icons">delete</i></a>
+	              </td>
+	            </tr>
+	          </tbody>
+	        </table>
+		</div>
+	</div>
+
+  	<div th:include="layout/footer :: copy" th:fragment="containerFooter"></div>
+
+</body>
+</html>

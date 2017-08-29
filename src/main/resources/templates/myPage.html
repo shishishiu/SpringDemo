@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="layout/header :: header">
+	<title>Web Page</title>
+ </head>
+<body>
+	<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+	
+	<div th:replace="layout/loginInfo :: loginInfo"></div>
+	
+	<span sec:authorize="hasAuthority('ROLE_ADMIN')">
+		<a href="/admin" th:text="#{common.link.admin}"></a>
+	</span>
+	
+	<form th:action="@{/logout}" method="post">
+	
+    	<div style="margin-left: 10px">
+     		<button type="submit" th:text="#{common.boton.terminar_sesion}" class="boton" ></button>
+     	</div>
+     </form>
+</body>
+</html>

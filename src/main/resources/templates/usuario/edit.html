@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="layout/header :: header">
+	<title>Web Page</title>
+</head>
+<body>
+
+	<script src="/js/usuario/buscar.js"></script>
+	<div class="container">
+		<div th:replace="layout/loginInfo :: loginInfo"></div>
+
+
+		<h3>Editar Usuario</h3>
+
+        <form action="/admin/usuario/buscar" th:action="@{/admin/usuario/buscar}" method="post" id="buscarForm">
+
+		    <div class="row" style="width:90%;text-align: center">
+		        <table class="table" th:object="${usuario}" style="width:50%;text-align: center">
+		          <tr>
+		            <td style="width:20%;" th:utext="#{mstUser.loginId}">loginId</td>
+		            <td th:text="*{loginId}"></td>
+		          </tr>
+		          <tr>
+		            <td th:utext="#{mstUser.username}">name</td>
+		            <td th:text="*{username}"></td>
+		          </tr>
+		          <tr>
+		            <td th:utext="#{mstUser.mailAddress}">mailAddress</td>
+		            <td th:text="*{mailAddress}"></td>
+		          </tr>
+ 		          <tr>
+		            <td>departamento</td>
+		            <td th:text="*{department.name}"></td>
+		          </tr>
+<!-- 		          <tr>
+		            <th th:utext="#{actor.birthday}">birthday</th>
+		            <td th:text="*{birthday != null}? *{#dates.format(birthday,'yyyy-MM-dd')} : '-'"></td>
+		          </tr> -->
+		        </table>
+		    </div>
+
+
+   	    	<div>
+     			<button type="submit" value="back" name="back" class="boton" >back</button>
+     		</div>
+
+        </form>
+
+	
+	</div>
+
+  	<div th:include="layout/footer :: copy" th:fragment="containerFooter"></div>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:include="layout/header :: header">
+	<title>Web Page</title>
+ </head>
+<body>
+
+	<section>
+		<form th:action="@{/login}" method="post">
+	    	<div class="bastidor">  
+	    	
+	    		<div  th:if="${param.error}" th:include="Layout/errorMessage :: errorMessage(#{err.msg.invalid.user.contrasena})">test</div>
+	    		<div th:if="${param.logout}" th:include="Layout/message :: message(#{msg.terminar_sesion})">test</div>
+	    	
+	
+	     		<p><strong><span th:text="#{common.texto.usuario}"></span></strong>
+	         		<input name="username" type="text" />
+	         	</p>
+			    <p><strong><span th:text="#{common.texto.contrasena}"></span></strong>
+			    	<input name="password" type="password"/>
+			    </p>
+	    	</div>
+	    	<div style="margin-left: 10px">
+	     		<button type="submit" th:text="#{common.boton.iniciar_sesion}" class="boton" ></button>
+	     	</div>
+	     	
+		</form>
+		
+	  <!--<div th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']} != null">
+    	<span th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"></span>
+  	  </div>-->
+		
+	</section>
+<!-- 	<footer>
+    	<p layout:fragment="footer"></p>
+  	</footer> -->
+  	<div th:include="layout/footer :: copy"></div>
+</body>
+</html>
