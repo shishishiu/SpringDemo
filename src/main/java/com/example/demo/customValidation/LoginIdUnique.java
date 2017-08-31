@@ -11,7 +11,9 @@ import javax.validation.Payload;
 @Documented
 public @interface LoginIdUnique {
     String message() default ""; //error message
-    Class<?>[] groups() default {};//引数に使う型を宣言
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
+    String fieldLoginId() default "loginId";
+    String fieldHidId() default "hidId";
 }

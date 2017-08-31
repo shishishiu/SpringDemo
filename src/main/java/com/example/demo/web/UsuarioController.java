@@ -3,6 +3,8 @@ package com.example.demo.web;
 import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
@@ -28,18 +30,12 @@ import com.example.demo.repository.DepartmentRepository;
 
 @Controller
 @RequestMapping("/admin/usuario")
-@SessionAttributes(names="keyword")
 public class UsuarioController {
 
 	@Autowired
 	MemberRepository memberRepository;
 	@Autowired
 	DepartmentRepository departmentRepository;
-	
-	@ModelAttribute("keyword")
-    public String setRequestForm(String keyword){
-        return keyword;
-    }
 	
     @RequestMapping("")
     public String index() {
@@ -52,46 +48,35 @@ public class UsuarioController {
     }
 
     @RequestMapping(value="/buscar", method=RequestMethod.POST)
-    public ModelAndView search(String keyword) {
+    public ModelAndView search(String keyword, HttpServletRequest request) {
     	
         ModelAndView mv = new ModelAndView();
         mv.setViewName("usuario/buscar");
         
         if (StringUtils.isNotEmpty(keyword)) {
-          List<MemberEntity> list = memberRepository.findUsers(keyword);
+        	mv = mostrarList(mv, keyword);
           
-//          if (CollectionUtils.isEmpty(list)) {
-//            String message = msg.getMessage("actor.list.empty", null, Locale.JAPAN);
-//            mv.addObject("emptyMessage", message);
-//          }
+        	request.getSession().setAttribute("keyword",keyword);
           
-          mv.addObject("list", list);
-          mv.addObject("keyword", keyword);
-          setRequestForm(keyword);
         }
         return mv;
     }
-
-    @ModelAttribute
-    AddUsuarioForm setupForm() {
-        return new AddUsuarioForm();
-    }
-    
+  
     @RequestMapping(value="/add", method=RequestMethod.GET)
     public ModelAndView addIndex(Model model) {
     	
     	model.addAttribute("form", new AddUsuarioForm());
     	ModelAndView mv = new ModelAndView();
     	
-    	List<DepartmentEntity> list = departmentRepository.findByEnable(1);
-    	mv.addObject("departmentList", list);
+    	createDepartmentCombo(mv);
+    	
         mv.setViewName("usuario/add");
     	
         return mv;
    }
 
-    @RequestMapping(value="/add", params = "save", method=RequestMethod.POST)
-    public ModelAndView add(@ModelAttribute("form") @Valid AddUsuarioForm form, BindingResult result) {
+	@RequestMapping(value="/add", params = "insert", method=RequestMethod.POST)
+    public ModelAndView addMember(@ModelAttribute("form") @Valid AddUsuarioForm form, BindingResult result) {
     	
         ModelAndView mv = new ModelAndView();
 
@@ -100,8 +85,7 @@ public class UsuarioController {
 
         if (result.hasErrors()) {
         
-        	List<DepartmentEntity> list = departmentRepository.findByEnable(1);
-        	mv.addObject("departmentList", list);
+        	createDepartmentCombo(mv);
         	mv.setViewName("usuario/add");
 
         } else{
@@ -110,28 +94,72 @@ public class UsuarioController {
         	member.setDepartment(entity);
         	
 	        memberRepository.save(member);
-	 
+
+	        mv = mostrarList(mv, member.getLoginId());
+
 	        mv.setViewName("usuario/buscar");
-	        List<MemberEntity> list = memberRepository.findUsers(member.getLoginId());
-	        mv.addObject("list", list);
-	        mv.addObject("keyword", member.getLoginId());
 	        
         }
         
         return mv;
    }
 
-    @RequestMapping(value="/add", params = "back", method=RequestMethod.POST)
-    public ModelAndView back(@ModelAttribute("keyword")String session_keyword) {
+    @RequestMapping(value="/add", params = "update", method=RequestMethod.POST)
+    public ModelAndView updateMember(@ModelAttribute("form") @Valid AddUsuarioForm form, BindingResult result) {
     	
         ModelAndView mv = new ModelAndView();
 
-        if (StringUtils.isNotEmpty(session_keyword)) {
-            List<MemberEntity> list = memberRepository.findUsers(session_keyword);
-            mv.addObject("list", list);
-            mv.addObject("keyword",session_keyword);
+        MemberEntity member = new MemberEntity();
+        BeanUtils.copyProperties(form, member);
+       	member.setId(form.getHidId());
+
+        if (result.hasErrors()) {
+        
+        	createDepartmentCombo(mv);
+        	mv.setViewName("usuario/add");
+
+        } else{
+        
+        	DepartmentEntity depentity = departmentRepository.findByName(form.getDepartmentname());
+        	member.setDepartment(depentity);
+         	
+	        memberRepository.save(member);
+
+	        mv = mostrarList(mv, member.getLoginId());
+
+	        mv.setViewName("usuario/buscar");
+	        
         }
+        
+        return mv;
+   }
+
+
+    @RequestMapping(value="/add", params = "back", method=RequestMethod.POST)
+    public ModelAndView backFromAdd(HttpServletRequest request) {
+    	
+        ModelAndView mv = new ModelAndView();
+
+        HttpSession session = request.getSession(false);
+        String keyword = (String)session.getAttribute("keyword");
+        
+        mv = mostrarList(mv, keyword);
        
+    	mv.setViewName("usuario/buscar");
+
+        return mv;
+   }
+
+    @RequestMapping(value="/edit", params = "back", method=RequestMethod.POST)
+    public ModelAndView backFromEdit(HttpServletRequest request) {
+    	
+        ModelAndView mv = new ModelAndView();
+
+        HttpSession session = request.getSession(false);
+        String keyword = (String)session.getAttribute("keyword");
+        
+        mv = mostrarList(mv, keyword);
+
     	mv.setViewName("usuario/buscar");
 
         return mv;
@@ -141,10 +169,19 @@ public class UsuarioController {
     public ModelAndView edit(@PathVariable("loginId") String loginId) {
     	
     	ModelAndView mv = new ModelAndView();
-    	mv.setViewName("usuario/edit");
-    	MemberEntity entity = memberRepository.findByLoginId(loginId);
-    	mv.addObject("usuario", entity);
+
+    	MemberEntity entity = memberRepository.findByLoginIdAndEnabled(loginId,1);
     	
+    	
+    	AddUsuarioForm form = new AddUsuarioForm();
+        BeanUtils.copyProperties(entity, form);
+        form.setDepartmentname(entity.getDepartment().getName());
+        form.setHidId(entity.getId());
+    	mv.addObject("form", form);
+    	
+    	createDepartmentCombo(mv);
+    	mv.setViewName("usuario/add");
+
 		return mv;
     }
     
@@ -153,21 +190,32 @@ public class UsuarioController {
     	
     	ModelAndView mv = new ModelAndView();
 
-    	MemberEntity entity = memberRepository.findByLoginId(loginId);
+    	MemberEntity entity = memberRepository.findByLoginIdAndEnabled(loginId,1);
     	entity.setEnabled(0);
     	memberRepository.save(entity);
     	
-        if (StringUtils.isNotEmpty(keyword)) {
-            List<MemberEntity> list = memberRepository.findUsers(keyword);            
-            mv.addObject("list", list);
-            mv.addObject("keyword", keyword);
-        }
-  	
+        mv = mostrarList(mv, keyword);
     	
     	mv.setViewName("usuario/buscar");
    	
 		return mv;
     }
     
+    private ModelAndView mostrarList(ModelAndView mv, String keyword){
+        if (StringUtils.isNotEmpty(keyword)) {
+            List<MemberEntity> list = memberRepository.findUsers(keyword);
+            mv.addObject("list", list);
+            mv.addObject("keyword",keyword);
+        }
+       
+     	return mv;
+    }
+    
+    private void createDepartmentCombo(ModelAndView mv) {
+    	List<DepartmentEntity> list = departmentRepository.findByEnableOrderByName(1);
+    	mv.addObject("departmentList", list);
+		
+	}
+
 
 }

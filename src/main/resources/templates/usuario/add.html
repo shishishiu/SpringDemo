@@ -21,8 +21,11 @@
 		        
 		          <tr>
 		            <td style="width:20%;" th:utext="#{mstUser.loginId}">loginId</td>
-		            <td><input type="text" name="loginId" placeholder="loginId"  th:field="*{loginId}"/></td>
+		            <td>
+		            	<input type="text" name="loginId" placeholder="loginId"  th:field="*{loginId}" th:errorclass="error-field"/>
+		            </td>
 		            <td th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}" class="errMessage">loginId Error</td>
+		            <td th:if="${#fields.hasErrors('hidId')}" th:errors="*{hidId}" class="errMessage">loginId Error</td>
 		          </tr>
 		          <tr>
 		            <td th:utext="#{mstUser.username}">name</td>
@@ -49,10 +52,21 @@
 		        
      	    	<div>
 	     			<button type="submit" value="back" name="back" class="boton" >cancel</button>
-	     			<button type="submit" value="save" name="save" class="boton" >save</button>
+	     			
+		            <div th:if="${loginId==null}">
+		            	<button type="submit" value="insert" name="insert" class="boton" >save</button>
+		            </div>
+		            <div th:unless="${loginId==null}">
+		            	<button type="submit" value="update" name="update" class="boton" >save</button>
+		            </div>
+	     			
+	     			
+	     			
 	     		</div>
 		        
 		    </div>
+		    
+		    <input type="hidden" name="hidId" th:value="*{hidId}" />
 		    
         </form>
 

@@ -26,7 +26,7 @@ public class MemberServiceImpl implements UserDetailsService
         	throw new UsernameNotFoundException("Username is empty");
         }
 
-        MemberEntity memberEntity = memberRepository.findByLoginId(username);
+        MemberEntity memberEntity = memberRepository.findByLoginIdAndEnabled(username,1);
         if (memberEntity == null)
         {
         	throw new UsernameNotFoundException("User not found: " + username);

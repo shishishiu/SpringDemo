@@ -66,6 +66,10 @@ public class MemberEntity implements UserDetails
    {
        return this.id;
    }
+    public void setId(int id)
+   {
+       this.id = id;
+   }
 
     public String getLoginId()
    {

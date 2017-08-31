@@ -1,18 +1,22 @@
 package com.example.demo.form;
 
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
+import org.thymeleaf.util.StringUtils;
 
 import com.example.demo.customValidation.LoginIdUnique;
 
+@LoginIdUnique(message="{err.msg.loginid.unique}")
 public class AddUsuarioForm {
 
 	@NotNull
     @Size(min = 1, max = 255, message="{err.msg.size}")
-	@LoginIdUnique(message="{err.msg.loginid.unique}")
     private String loginId;
+	
+    private int hidId;
 
 	@NotNull
     @Size(min = 1, max = 255)
@@ -36,6 +40,13 @@ public class AddUsuarioForm {
     }
     public void setLoginId(String loginId) {
         this.loginId = loginId;
+    }
+
+    public int getHidId() {
+        return hidId;
+    }
+    public void setHidId(int hidId) {
+        this.hidId = hidId;
     }
 
     public String getUsername() {
@@ -69,5 +80,15 @@ public class AddUsuarioForm {
         this.departmentname = departmentname;
     }
 	    
-	    
+//    /**
+//     * getter para validation
+//     */
+//    @AssertTrue(message="")
+//    public boolean isValidLoginId(){
+//    	if(StringUtils.isEmpty(this.hidLoginId)){
+//    		return true;
+//    	}else{
+//    		return true;
+//    	}
+//    }
 }

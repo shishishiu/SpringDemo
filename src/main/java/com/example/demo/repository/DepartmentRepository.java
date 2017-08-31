@@ -9,6 +9,6 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Lo
 
     public DepartmentEntity findById(int id);
     public DepartmentEntity findByName(String name);
-    public List<DepartmentEntity> findByEnable(int enbale);
+    public List<DepartmentEntity> findByEnableOrderByName(int enbale);
 
 }
