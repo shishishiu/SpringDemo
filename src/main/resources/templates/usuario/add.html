@@ -25,7 +25,7 @@
 		            	<input type="text" name="loginId" placeholder="loginId"  th:field="*{loginId}" th:errorclass="error-field"/>
 		            </td>
 		            <td th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}" class="errMessage">loginId Error</td>
-		            <td th:if="${#fields.hasErrors('hidId')}" th:errors="*{hidId}" class="errMessage">loginId Error</td>
+		            <td th:if="${#fields.hasErrors('global')}" th:errors="*{global}" class="errMessage">loginId Error</td>
 		          </tr>
 		          <tr>
 		            <td th:utext="#{mstUser.username}">name</td>
