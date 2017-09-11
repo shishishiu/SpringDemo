@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.entity.DepartmentEntity;
 import com.example.demo.entity.MemberEntity;
+import com.example.demo.excel.ExcelBuilder;
 import com.example.demo.form.AddUsuarioForm;
 import com.example.demo.form.AutentificaForm;
 import com.example.demo.repository.MemberRepository;
@@ -184,7 +185,28 @@ public class UsuarioController {
 
 		return mv;
     }
+ 
+	@RequestMapping(value="/dl", method=RequestMethod.POST)
+    public ModelAndView dl() {
+    	
+		ModelAndView mv = new ModelAndView(new ExcelBuilder());
+         
+        mv.addObject("fileName", "POI" + ".xls");
+
+        return mv;
+    }
     
+	@RequestMapping(value="/dl/{loginId}", method=RequestMethod.POST)
+    public ModelAndView dlByLoginId(@PathVariable("loginId") String loginId) {
+    	
+		ModelAndView mv = new ModelAndView(new ExcelBuilder());
+         
+        mv.addObject("fileName", "POI" + ".xls");
+
+        return mv;
+    }
+    
+
 	@RequestMapping(value="delete/{loginId}", method=RequestMethod.POST)
     public ModelAndView delete(@PathVariable("loginId") String loginId, String keyword) {
     	

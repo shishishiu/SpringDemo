@@ -6,7 +6,7 @@
 </head>
 <body>
 
-	<script src="/js/usuario/buscar.js"></script>
+	<script src="/js/usuario/add.js"></script>
 	<div class="container">
 		<div th:replace="layout/loginInfo :: loginInfo"></div>
 
@@ -22,7 +22,7 @@
 		          <tr>
 		            <td style="width:20%;" th:utext="#{mstUser.loginId}">loginId</td>
 		            <td>
-		            	<input type="text" name="loginId" placeholder="loginId"  th:field="*{loginId}" th:errorclass="error-field"/>
+		            	<input type="text" id="loginId" name="loginId" placeholder="loginId"  th:field="*{loginId}" th:errorclass="error-field"/>
 		            </td>
 		            <td th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}" class="errMessage">loginId Error</td>
 		            <td th:if="${#fields.hasErrors('global')}" th:errors="*{global}" class="errMessage">loginId Error</td>
@@ -53,11 +53,12 @@
      	    	<div>
 	     			<button type="submit" value="back" name="back" class="boton" >cancel</button>
 	     			
-		            <div th:if="${loginId==null}">
+		            <div th:if="${loginId==null}" style="display:inline">
 		            	<button type="submit" value="insert" name="insert" class="boton" >save</button>
 		            </div>
-		            <div th:unless="${loginId==null}">
+		            <div th:unless="${loginId==null}" style="display:inline">
 		            	<button type="submit" value="update" name="update" class="boton" >save</button>
+		            	<a href="javascript:void(0)" onclick="dl()" title="file download"><i class="material-icons">file_download</i></a>
 		            </div>
 	     			
 	     			
