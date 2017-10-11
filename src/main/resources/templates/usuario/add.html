@@ -29,7 +29,7 @@
 		          </tr>
 		          <tr>
 		            <td th:utext="#{mstUser.username}">name</td>
-		            <td><input type="text" name="username" placeholder="username" th:field="*{username}" /></td>
+		            <td><input type="text" id="username" name="username" placeholder="username" th:field="*{username}" /></td>
 		            <td th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="errMessage">username Error</td>
 		          </tr>
 		          <tr>

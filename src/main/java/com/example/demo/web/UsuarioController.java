@@ -2,6 +2,7 @@ package com.example.demo.web;
 
 import org.apache.commons.lang3.StringUtils;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -9,6 +10,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,12 +22,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.entity.DepartmentEntity;
 import com.example.demo.entity.MemberEntity;
 import com.example.demo.excel.ExcelBuilder;
+import com.example.demo.excel.ExcelBuilderUsuario;
 import com.example.demo.form.AddUsuarioForm;
 import com.example.demo.form.AutentificaForm;
 import com.example.demo.repository.MemberRepository;
@@ -187,25 +193,42 @@ public class UsuarioController {
     }
  
 	@RequestMapping(value="/dl", method=RequestMethod.POST)
-    public ModelAndView dl() {
+    public ModelAndView dl(String keyword) {
     	
+		
 		ModelAndView mv = new ModelAndView(new ExcelBuilder());
+
+        if (StringUtils.isNotEmpty(keyword)) {
+        	mv = mostrarList(mv, keyword);         
+        }
          
-        mv.addObject("fileName", "POI" + ".xls");
+        mv.addObject("fileName", "POI" + ".xlsx");
 
         return mv;
     }
     
 	@RequestMapping(value="/dl/{loginId}", method=RequestMethod.POST)
+//    public ModelAndView dlByLoginId(@PathVariable("loginId") String loginId) {
     public ModelAndView dlByLoginId(@PathVariable("loginId") String loginId) {
     	
-		ModelAndView mv = new ModelAndView(new ExcelBuilder());
-         
-        mv.addObject("fileName", "POI" + ".xls");
+    	ModelAndView mv = new ModelAndView(new ExcelBuilderUsuario(),"message", "test");
 
-        return mv;
+    	MemberEntity entity = memberRepository.findByLoginIdAndEnabled(loginId,1);
+    	    	
+    	AddUsuarioForm form = new AddUsuarioForm();
+        BeanUtils.copyProperties(entity, form);
+        form.setDepartmentname(entity.getDepartment().getName());
+        form.setHidId(entity.getId());
+    	mv.addObject("form", form);
+    	
+    	createDepartmentCombo(mv);
+
+//        mv.addObject("fileName", "Usuario.txt");
+
+        return new ModelAndView(new ExcelBuilderUsuario(),"message", "test");
     }
     
+	
 
 	@RequestMapping(value="delete/{loginId}", method=RequestMethod.POST)
     public ModelAndView delete(@PathVariable("loginId") String loginId, String keyword) {

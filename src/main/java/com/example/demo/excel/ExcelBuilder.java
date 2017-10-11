@@ -10,16 +10,17 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.servlet.view.document.AbstractXlsView;
+import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
 import com.example.demo.entity.MemberEntity;
 
-public class ExcelBuilder extends AbstractXlsView  {
+public class ExcelBuilder extends AbstractXlsxView  {
 
 	@Override
 	protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-	       String fileName = new String("POI.xls".getBytes("MS932"), "ISO-8859-1");
+	       String fileName = new String("POI.xlsx".getBytes("MS932"), "ISO-8859-1");
 	       
 	       @SuppressWarnings("unchecked")
 	       List<MemberEntity> list = (List<MemberEntity>) model.get("list");
